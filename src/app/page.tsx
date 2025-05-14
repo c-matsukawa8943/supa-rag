@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import ChatInterface from '@/components/ChatInterface';
+import styles from './page.module.css';
 
 export default function Home() {
   const [notification, setNotification] = useState<string | null>(null);
@@ -17,23 +18,23 @@ export default function Home() {
   };
   
   return (
-    <main className="min-h-screen flex flex-col p-4 md:p-8">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold mb-2">PDF RAGチャットシステム</h1>
-        <p className="text-gray-600">
+    <main className={styles.main}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>PDF RAGチャットシステム</h1>
+        <p className={styles.description}>
           PDFファイルをアップロードして、内容について質問できます。
         </p>
       </header>
       
       {notification && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        <div className={styles.notification}>
           {notification}
         </div>
       )}
       
       <FileUpload onUploadComplete={handleUploadComplete} />
       
-      <div className="flex-1 border rounded-lg shadow-sm overflow-hidden">
+      <div className={styles.chatContainer}>
         <ChatInterface />
       </div>
     </main>
