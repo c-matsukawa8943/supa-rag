@@ -1,22 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import FileUpload from '@/components/FileUpload';
-import ChatInterface from '@/components/ChatInterface';
+import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function Home() {
-  const [notification, setNotification] = useState<string | null>(null);
-  
-  const handleUploadComplete = (message: string) => {
-    setNotification(message);
-    
-    // 3秒後に通知を非表示
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  };
-  
   return (
     <main className={styles.main}>
       <header className={styles.header}>
@@ -26,16 +13,22 @@ export default function Home() {
         </p>
       </header>
       
-      {notification && (
-        <div className={styles.notification}>
-          {notification}
+      <div className={styles.navigationContainer}>
+        <div className={styles.navigationCard}>
+          <h2>PDFのアップロード</h2>
+          <p>PDFファイルをアップロードして、ベクトルデータベースに保存します。</p>
+          <Link href="/upload" className={styles.navigationButton}>
+            アップロードページへ
+          </Link>
         </div>
-      )}
-      
-      <FileUpload onUploadComplete={handleUploadComplete} />
-      
-      <div className={styles.chatContainer}>
-        <ChatInterface />
+        
+        <div className={styles.navigationCard}>
+          <h2>チャットインターフェース</h2>
+          <p>アップロードしたPDFの内容について質問します。</p>
+          <Link href="/chat" className={styles.navigationButton}>
+            チャットページへ
+          </Link>
+        </div>
       </div>
     </main>
   );
