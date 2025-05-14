@@ -7,50 +7,29 @@ import debugModule from 'debug';
 const debug = debugModule('app:pdf-parser');
 debug.enabled = true;
 
-// リトライ処理を行う汎用関数
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  maxRetries: number = 5,
-  initialDelay: number = 5000
-): Promise<T> {
-  let lastError: any = null;
-  let delay = initialDelay;
-  
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      lastError = err;
-      debug(`API呼び出しエラー (試行 ${attempt + 1}/${maxRetries}):`, err);
-      
-      // 503エラーや429エラー（レート制限）の場合はリトライ
-      const isRetryableError = 
-        (err.status === 429) || 
-        (err.status === 503) ||
-        (err.statusCode === 429) || 
-        (err.statusCode === 503) ||
-        (err.response?.status === 429) || 
-        (err.response?.status === 503) ||
-        (err.message && (err.message.includes('429') || err.message.includes('503') || err.message.includes('Service Unavailable') || err.message.includes('Too Many Requests')));
-      
-      if (isRetryableError) {
-        // リトライする前に待機（エクスポネンシャルバックオフ）
-        debug(`API制限または一時的なエラーが発生。${delay / 1000}秒後にリトライします... (${attempt + 1}/${maxRetries})`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        
-        // 次回の待機時間を延長（最大60秒まで）
-        delay = Math.min(delay * 1.5, 60000);
-        continue;
-      }
-      
-      // リトライ対象外のエラーは即時失敗
-      throw err;
-    }
+// ファイル検証関数を追加（新規）
+export function validatePdfFile(file: File): { isValid: boolean; error?: string; status?: number; fileSizeMB?: number } {
+  if (!file) {
+    debug('エラー: ファイルが提供されていません');
+    return { isValid: false, error: 'ファイルが提供されていません', status: 400 };
   }
   
-  // すべてのリトライが失敗した場合
-  debug('最大リトライ回数に達しました:', lastError);
-  throw lastError || new Error('リトライが最大回数に達しました');
+  // ファイル形式を検証
+  if (!file.name.endsWith('.pdf')) {
+    debug('エラー: 非PDFファイルがアップロードされました: %s', file.type);
+    return { isValid: false, error: 'PDFファイルのみサポートしています', status: 400 };
+  }
+  
+  // ファイルサイズを計算
+  const fileSizeMB = file.size / (1024 * 1024);
+  
+  // ファイルサイズを検証（10MB以上の場合は警告）
+  if (fileSizeMB > 10) {
+    debug('警告: 大きなファイル (%.2fMB) がアップロードされました', fileSizeMB);
+  }
+  
+  debug('ファイル検証成功: %s (%.2fMB)', file.name, fileSizeMB);
+  return { isValid: true, fileSizeMB };
 }
 
 // PDFをテキストに変換
@@ -232,6 +211,52 @@ export function splitTextIntoChunks(text: string, chunkSize: number = 800): { co
   }
   
   return chunks;
+}
+
+// ベクトル化のリトライ処理を行う汎用関数
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 5,
+  initialDelay: number = 5000
+): Promise<T> {
+  let lastError: any = null;
+  let delay = initialDelay;
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      lastError = err;
+      debug(`API呼び出しエラー (試行 ${attempt + 1}/${maxRetries}):`, err);
+      
+      // 503エラーや429エラー（レート制限）の場合はリトライ
+      const isRetryableError = 
+        (err.status === 429) || 
+        (err.status === 503) ||
+        (err.statusCode === 429) || 
+        (err.statusCode === 503) ||
+        (err.response?.status === 429) || 
+        (err.response?.status === 503) ||
+        (err.message && (err.message.includes('429') || err.message.includes('503') || err.message.includes('Service Unavailable') || err.message.includes('Too Many Requests')));
+      
+      if (isRetryableError) {
+        // リトライする前に待機（エクスポネンシャルバックオフ）
+        debug(`API制限または一時的なエラーが発生。${delay / 1000}秒後にリトライします... (${attempt + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        
+        // 次回の待機時間を延長（最大60秒まで）
+        delay = Math.min(delay * 1.5, 60000);
+        continue;
+      }
+      
+      // リトライ対象外のエラーは即時失敗
+      throw err;
+    }
+  }
+  
+  // すべてのリトライが失敗した場合
+  debug('最大リトライ回数に達しました:', lastError);
+  throw lastError || new Error('リトライが最大回数に達しました');
 }
 
 // テキストをベクトル化
