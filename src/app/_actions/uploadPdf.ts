@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache';
-import { parsePdf, splitTextIntoChunks, storeDocument } from '@/lib/utils/pdf-parser';
+import { parsePdf, splitTextIntoChunks, storeDocument, failedChunks, retryFailedChunks } from '@/lib/utils/pdf-parser';
 
 export async function uploadPdfAction(formData: FormData) {
   try {
@@ -104,13 +104,40 @@ export async function uploadPdfAction(formData: FormData) {
     
     console.log(`保存完了: ${documentIds.length}ドキュメントが保存されました`);
     
+    // 失敗したチャンクがある場合、その数を表示
+    let failedChunksCount = failedChunks.length;
+    let retryResultMessage = '';
+    
+    if (failedChunksCount > 0) {
+      console.log(`失敗したチャンクが${failedChunksCount}個あります。再処理を試みます...`);
+      
+      try {
+        // 失敗したチャンクを再処理
+        const retryIds = await retryFailedChunks();
+        if (retryIds.length > 0) {
+          documentIds = [...documentIds, ...retryIds];
+          retryResultMessage = `（${retryIds.length}個のチャンクが再処理されました）`;
+          console.log(`再処理成功: ${retryIds.length}個のチャンクが正常に処理されました`);
+        } else {
+          retryResultMessage = `（失敗したチャンクの再処理は成功しませんでした）`;
+          console.log('再処理: 追加のチャンクは処理されませんでした');
+        }
+      } catch (retryErr) {
+        console.error('再処理中にエラーが発生:', retryErr);
+        retryResultMessage = `（失敗したチャンクの再処理中にエラーが発生しました）`;
+      }
+    }
+    
     // キャッシュを更新
     revalidatePath('/');
     
     return {
       success: true,
-      message: `${documentIds.length}チャンクのPDFが正常に処理されました`,
-      documentIds
+      message: `${documentIds.length}チャンクのPDFが正常に処理されました${retryResultMessage}`,
+      documentIds,
+      originalChunks: chunks.length,
+      processedChunks: documentIds.length,
+      failedChunks: failedChunks.length
     };
     
   } catch (error) {
@@ -129,6 +156,48 @@ export async function uploadPdfAction(formData: FormData) {
       ? `PDFの処理中にエラーが発生しました: ${error.message}`
       : 'PDFの処理中に不明なエラーが発生しました';
     
-    return { error: errorMessage, status: 500 };
+    return { error: errorMessage, status: typeof error === 'object' && error !== null && 'status' in error ? 
+      (error.status as number) : 500 };
+  }
+} 
+
+// 失敗したチャンクを再処理するためのアクション
+export async function retryFailedChunksAction() {
+  try {
+    const failedCount = failedChunks.length;
+    
+    if (failedCount === 0) {
+      return { 
+        success: true, 
+        message: '再処理するチャンクはありません', 
+        processedChunks: 0 
+      };
+    }
+    
+    console.log(`失敗したチャンク${failedCount}個の再処理を開始します...`);
+    const documentIds = await retryFailedChunks();
+    console.log(`再処理完了: ${documentIds.length}個のチャンクが処理されました`);
+    
+    // キャッシュを更新
+    revalidatePath('/');
+    
+    return {
+      success: true,
+      message: `${documentIds.length}チャンクが正常に再処理されました`,
+      processedChunks: documentIds.length
+    };
+    
+  } catch (error) {
+    console.error('チャンクの再処理中にエラーが発生しました:', error);
+    
+    const errorMessage = error instanceof Error 
+      ? `チャンクの再処理中にエラーが発生しました: ${error.message}`
+      : 'チャンクの再処理中に不明なエラーが発生しました';
+    
+    return { 
+      error: errorMessage, 
+      status: typeof error === 'object' && error !== null && 'status' in error ? 
+        (error.status as number) : 500 
+    };
   }
 } 

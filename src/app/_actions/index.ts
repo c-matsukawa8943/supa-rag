@@ -1,2 +1,2 @@
-export { uploadPdfAction } from './uploadPdf';
-export { generateChatResponseAction } from './generateChatResponse'; 
+export * from './generateChatResponse';
+export * from './uploadPdf'; 

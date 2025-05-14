@@ -1,12 +1,57 @@
 import pdfParse from 'pdf-parse';
 import { getModel, getEmbeddingModel } from './gemini';
 import { supabase } from './supabase';
-import fs from 'fs';
 import debugModule from 'debug';
 
 // デバッグ用のロガーを設定
 const debug = debugModule('app:pdf-parser');
 debug.enabled = true;
+
+// リトライ処理を行う汎用関数
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 5,
+  initialDelay: number = 5000
+): Promise<T> {
+  let lastError: any = null;
+  let delay = initialDelay;
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      lastError = err;
+      debug(`API呼び出しエラー (試行 ${attempt + 1}/${maxRetries}):`, err);
+      
+      // 503エラーや429エラー（レート制限）の場合はリトライ
+      const isRetryableError = 
+        (err.status === 429) || 
+        (err.status === 503) ||
+        (err.statusCode === 429) || 
+        (err.statusCode === 503) ||
+        (err.response?.status === 429) || 
+        (err.response?.status === 503) ||
+        (err.message && (err.message.includes('429') || err.message.includes('503') || err.message.includes('Service Unavailable') || err.message.includes('Too Many Requests')));
+      
+      if (isRetryableError) {
+        // リトライする前に待機（エクスポネンシャルバックオフ）
+        debug(`API制限または一時的なエラーが発生。${delay / 1000}秒後にリトライします... (${attempt + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        
+        // 次回の待機時間を延長（最大60秒まで）
+        delay = Math.min(delay * 1.5, 60000);
+        continue;
+      }
+      
+      // リトライ対象外のエラーは即時失敗
+      throw err;
+    }
+  }
+  
+  // すべてのリトライが失敗した場合
+  debug('最大リトライ回数に達しました:', lastError);
+  throw lastError || new Error('リトライが最大回数に達しました');
+}
 
 // PDFをテキストに変換
 export async function parsePdf(buffer: Buffer): Promise<string> {
@@ -21,7 +66,9 @@ export async function parsePdf(buffer: Buffer): Promise<string> {
     // pdf-parseにオプションを追加
     const options = {
       // PDF内の画像を無視（テキストのみ抽出）
-      max: 0
+      max: 0,
+      // テストファイルの参照を回避
+      disableCombinedImage: true
     };
     
     debug('pdf-parse呼び出し開始...');
@@ -199,7 +246,11 @@ export async function getEmbedding(text: string): Promise<number[]> {
     
     const model = getEmbeddingModel();
     debug('Geminiエンベディングモデル呼び出し開始...');
-    const result = await model.embedContent(text) as unknown as { embedding: { values: number[] } };
+    
+    // リトライロジックを追加
+    const result = await withRetry(async () => {
+      return await model.embedContent(text) as unknown as { embedding: { values: number[] } };
+    });
     
     if (!result.embedding || !result.embedding.values) {
       debug('エンベディング処理失敗: 無効な応答形式');
@@ -215,6 +266,9 @@ export async function getEmbedding(text: string): Promise<number[]> {
     throw new Error('テキストのベクトル化に失敗しました: ' + (error instanceof Error ? error.message : '不明なエラー'));
   }
 }
+
+// 失敗したチャンクをグローバルに保持
+export const failedChunks: { fileName: string; chunk: { content: string; page_num: number } }[] = [];
 
 // PDFドキュメントをSupabaseに保存
 export async function storeDocument(fileName: string, chunks: { content: string, page_num: number }[]): Promise<string[]> {
@@ -235,6 +289,9 @@ export async function storeDocument(fileName: string, chunks: { content: string,
       chunk.content.substring(0, 30).replace(/\n/g, ' '));
   });
   
+  // 処理に失敗したチャンクを一時的に保存
+  const localFailedChunks: { content: string; page_num: number }[] = [];
+  
   for (const chunk of chunks) {
     try {
       debug('チャンク処理中: ページ=%d, 内容長=%d', chunk.page_num, chunk.content.length);
@@ -254,6 +311,8 @@ export async function storeDocument(fileName: string, chunks: { content: string,
       if (!embedding || embedding.length === 0) {
         debug('エラー: ページ %d のエンベディングが空です', chunk.page_num);
         console.error(`ページ ${chunk.page_num} のエンベディングが空のためスキップします`);
+        // 失敗したチャンクを保存
+        localFailedChunks.push({...chunk});
         continue;
       }
       
@@ -271,6 +330,8 @@ export async function storeDocument(fileName: string, chunks: { content: string,
       if (result.error) {
         debug('Supabaseエラー: %o', result.error);
         console.error('Supabaseへの保存中にエラーが発生しました:', result.error);
+        // 失敗したチャンクを保存
+        localFailedChunks.push({...chunk});
         throw result.error;
       }
       
@@ -286,6 +347,9 @@ export async function storeDocument(fileName: string, chunks: { content: string,
       debug('チャンク保存エラー: ページ=%d, エラー=%o', chunk.page_num, error);
       console.error(`ドキュメントの保存中にエラーが発生しました (ページ ${chunk.page_num}):`, error);
       
+      // 失敗したチャンクを保存
+      localFailedChunks.push({...chunk});
+      
       // エラーの詳細情報をログに記録
       if (error instanceof Error) {
         console.error('エラー詳細:', {
@@ -297,6 +361,53 @@ export async function storeDocument(fileName: string, chunks: { content: string,
     }
   }
   
+  // 失敗したチャンクをグローバル配列に追加
+  if (localFailedChunks.length > 0) {
+    debug('失敗したチャンク: %d個', localFailedChunks.length);
+    localFailedChunks.forEach(chunk => {
+      failedChunks.push({ fileName, chunk });
+    });
+  }
+  
   debug('ドキュメント保存完了: %d個のIDが生成されました', documentIds.length);
   return documentIds;
+}
+
+// 失敗したチャンクを再処理する
+export async function retryFailedChunks(): Promise<string[]> {
+  debug('失敗したチャンクの再処理開始: %d個のチャンク', failedChunks.length);
+  const successIds: string[] = [];
+  
+  if (failedChunks.length === 0) {
+    debug('再処理するチャンクがありません');
+    return successIds;
+  }
+  
+  // チャンクをファイル名でグループ化
+  const chunksByFileName: Record<string, { content: string, page_num: number }[]> = {};
+  
+  failedChunks.forEach(({fileName, chunk}) => {
+    if (!chunksByFileName[fileName]) {
+      chunksByFileName[fileName] = [];
+    }
+    chunksByFileName[fileName].push(chunk);
+  });
+  
+  // ファイルごとに処理
+  for (const [fileName, chunks] of Object.entries(chunksByFileName)) {
+    debug('再処理中: ファイル=%s, チャンク数=%d', fileName, chunks.length);
+    try {
+      const ids = await storeDocument(fileName, chunks);
+      successIds.push(...ids);
+    } catch (error) {
+      debug('再処理中にエラーが発生: ファイル=%s, エラー=%o', fileName, error);
+      console.error(`ファイル ${fileName} の再処理中にエラーが発生しました:`, error);
+    }
+  }
+  
+  // 再処理に成功したチャンクを配列から削除
+  failedChunks.length = 0;
+  
+  debug('失敗したチャンクの再処理完了: %d個のIDが生成されました', successIds.length);
+  return successIds;
 }
