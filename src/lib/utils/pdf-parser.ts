@@ -1,5 +1,5 @@
 import pdfParse from 'pdf-parse';
-import { getModel, getEmbeddingModel } from './gemini';
+import { getEmbeddingModel } from './gemini';
 import { supabase } from './supabase';
 import debugModule from 'debug';
 

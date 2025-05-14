@@ -19,12 +19,6 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
     
     if (!file) return;
     
-    // ファイル形式の検証
-    if (!file.name.endsWith('.pdf')) {
-      setError('PDFファイルのみアップロードできます');
-      return;
-    }
-    
     try {
       setUploading(true);
       setError(null);

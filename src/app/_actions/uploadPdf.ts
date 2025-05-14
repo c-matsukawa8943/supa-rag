@@ -105,7 +105,7 @@ export async function uploadPdfAction(formData: FormData) {
     console.log(`保存完了: ${documentIds.length}ドキュメントが保存されました`);
     
     // 失敗したチャンクがある場合、その数を表示
-    let failedChunksCount = failedChunks.length;
+    const failedChunksCount = failedChunks.length;
     let retryResultMessage = '';
     
     if (failedChunksCount > 0) {
