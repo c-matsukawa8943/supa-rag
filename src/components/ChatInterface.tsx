@@ -1,5 +1,8 @@
+'use client'
+
 import { useState, FormEvent, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { generateChatResponseAction } from '@/app/_actions';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -18,6 +21,7 @@ export default function ChatInterface() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [sources, setSources] = useState<Source[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // メッセージ追加時のスクロール処理
@@ -31,6 +35,9 @@ export default function ChatInterface() {
     
     if (!input.trim() || loading) return;
     
+    // エラーをリセット
+    setError(null);
+    
     // ユーザーのメッセージを追加
     const userMessage: Message = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -39,18 +46,10 @@ export default function ChatInterface() {
     try {
       setLoading(true);
       
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question: userMessage.content }),
-      });
+      const result = await generateChatResponseAction(userMessage.content);
       
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || '回答の取得中にエラーが発生しました');
+      if ('error' in result) {
+        throw new Error(result.error);
       }
       
       // アシスタントの回答を追加
@@ -64,10 +63,52 @@ export default function ChatInterface() {
       
     } catch (error) {
       console.error('エラーが発生しました:', error);
-      setMessages((prev) => [...prev, { 
-        role: 'assistant', 
-        content: 'エラーが発生しました。しばらくしてからもう一度お試しください。' 
-      }]);
+      setError(error instanceof Error ? error.message : 'エラーが発生しました');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // 最後の質問を再試行
+  const handleRetry = async () => {
+    if (loading) return;
+    
+    // 最後のユーザーメッセージを取得
+    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
+    if (!lastUserMessage) return;
+    
+    setError(null);
+    
+    try {
+      setLoading(true);
+      
+      const result = await generateChatResponseAction(lastUserMessage.content);
+      
+      if ('error' in result) {
+        throw new Error(result.error);
+      }
+      
+      // アシスタントの回答を追加（最後のアシスタントメッセージがあれば置き換え）
+      const assistantMessage: Message = { role: 'assistant', content: result.answer };
+      
+      setMessages((prev) => {
+        const lastIndex = prev.findIndex(m => m.role === 'assistant');
+        if (lastIndex >= 0) {
+          const newMessages = [...prev];
+          newMessages[lastIndex] = assistantMessage;
+          return newMessages;
+        }
+        return [...prev, assistantMessage];
+      });
+      
+      // 回答のソース情報を設定
+      if (result.sources && Array.isArray(result.sources)) {
+        setSources(result.sources);
+      }
+      
+    } catch (error) {
+      console.error('再試行中にエラーが発生しました:', error);
+      setError(error instanceof Error ? error.message : '再試行中にエラーが発生しました');
     } finally {
       setLoading(false);
     }
@@ -95,6 +136,20 @@ export default function ChatInterface() {
         )}
         <div ref={messagesEndRef} />
       </div>
+      
+      {/* エラーメッセージ */}
+      {error && (
+        <div className="border-t p-4 bg-red-50">
+          <p className="text-red-600 mb-2">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200 text-sm"
+            disabled={loading}
+          >
+            再試行する
+          </button>
+        </div>
+      )}
       
       {/* ソース情報エリア */}
       {sources.length > 0 && (

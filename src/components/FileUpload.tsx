@@ -1,5 +1,8 @@
+'use client'
+
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { uploadPdfAction } from '@/app/_actions';
 
 type FileUploadProps = {
   onUploadComplete: (message: string) => void;
@@ -27,15 +30,10 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const result = await uploadPdfAction(formData);
       
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || 'アップロード中にエラーが発生しました');
+      if ('error' in result) {
+        throw new Error(result.error);
       }
       
       onUploadComplete(result.message);
