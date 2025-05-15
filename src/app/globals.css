@@ -1,39 +1,65 @@
+/**
+ * グローバルCSSスタイル
+ * 
+ * このファイルにはアプリケーション全体に適用されるスタイルを定義します。
+ * 全ページで共通の基本スタイルやテーマカラー、フォントなどを設定します。
+ */
+
+/* ルート変数 - アプリケーション全体で使うカラーテーマの定義 */
 :root {
   --foreground-rgb: 0, 0, 0;
+  /* 基本文字色（黒） */
   --background-rgb: 255, 255, 255;
+  /* 基本背景色（白） */
 }
 
+/* HTML・BODYの基本設定 */
 html,
 body {
   max-width: 100vw;
+  /* ビューポート幅を超えないようにする */
   overflow-x: hidden;
+  /* 横方向のスクロールを無効化 */
 }
 
+/* BODY要素のスタイリング */
 body {
   color: rgb(var(--foreground-rgb));
+  /* テキスト色を変数から設定 */
   background: rgb(var(--background-rgb));
+  /* 背景色を変数から設定 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* システムフォントを優先使用 */
   -webkit-font-smoothing: antialiased;
+  /* WebKitブラウザでのフォント表示を最適化 */
   -moz-osx-font-smoothing: grayscale;
+  /* Firefoxでのフォント表示を最適化 */
 }
 
+/* すべての要素に適用する基本ボックスモデル */
 * {
   box-sizing: border-box;
+  /* 幅と高さの計算にパディングとボーダーを含める */
   padding: 0;
   margin: 0;
 }
 
+/* リンクスタイルのリセット */
 a {
   color: inherit;
+  /* 親要素から色を継承 */
   text-decoration: none;
+  /* デフォルトの下線を削除 */
 }
 
-/* チャットメッセージのスタイル */
+/* チャットインターフェース用のユーティリティクラス - メッセージの最大幅 */
 .max-w-3\/4 {
   max-width: 75%;
+  /* コンテナの75%幅に制限 */
 }
 
-/* マークダウンコンテンツ内のスタイル */
+/* マークダウンコンテンツ用スタイル - チャットでの回答表示に使用 */
+/* 見出し1のスタイル */
 .markdown-content h1 {
   font-size: 1.5rem;
   font-weight: bold;
@@ -41,6 +67,7 @@ a {
   margin-bottom: 0.5rem;
 }
 
+/* 見出し2のスタイル */
 .markdown-content h2 {
   font-size: 1.25rem;
   font-weight: bold;
@@ -48,31 +75,41 @@ a {
   margin-bottom: 0.5rem;
 }
 
+/* 段落のスタイル */
 .markdown-content p {
   margin-bottom: 0.5rem;
 }
 
+/* リストのスタイル */
 .markdown-content ul,
 .markdown-content ol {
   padding-left: 1.5rem;
+  /* リストマーカーのスペース確保 */
   margin-bottom: 0.5rem;
 }
 
+/* リスト項目のスタイル */
 .markdown-content li {
   margin-bottom: 0.25rem;
 }
 
+/* インラインコードのスタイル */
 .markdown-content code {
   font-family: monospace;
+  /* 等幅フォント */
   background-color: rgba(0, 0, 0, 0.05);
+  /* 薄いグレー背景 */
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
 }
 
+/* コードブロックのスタイル */
 .markdown-content pre {
   background-color: rgba(0, 0, 0, 0.05);
+  /* 薄いグレー背景 */
   padding: 1rem;
   border-radius: 0.5rem;
   overflow-x: auto;
+  /* 横幅が広い場合にスクロール可能に */
   margin-bottom: 0.75rem;
 }

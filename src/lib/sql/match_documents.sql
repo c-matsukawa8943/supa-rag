@@ -20,9 +20,9 @@ BEGIN
     documents.file_name,
     documents.page_num,
     documents.content,
-    1 - (documents.embedding <=> query_embedding) AS similarity
+    (documents.embedding <#> query_embedding) * -1 AS similarity
   FROM documents
-  WHERE 1 - (documents.embedding <=> query_embedding) > match_threshold
+  WHERE (documents.embedding <#> query_embedding) * -1 > match_threshold
   ORDER BY similarity DESC
   LIMIT match_count;
 END;

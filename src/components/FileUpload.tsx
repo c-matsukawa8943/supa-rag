@@ -1,17 +1,26 @@
 'use client'
-
+// useCallbackを使うことで、関数を再生成しないようにする
 import { useState, useCallback } from 'react';
+// useDropzoneを使うことで、ドラッグ&ドロップの機能を実装する
 import { useDropzone } from 'react-dropzone';
+// uploadPdfで定義したアクションを実行する
 import { uploadPdfAction, retryFailedChunksAction } from '@/app/_actions';
-
+// FileUploadPropsは、FileUploadコンポーネントのpropsの型を定義する
 type FileUploadProps = {
+  // onUploadCompleteは、アップロードが完了したときに呼び出される関数
   onUploadComplete: (message: string) => void;
 };
-
+// FileUploadコンポーネントは、FileUploadPropsを受け取る
 export default function FileUpload({ onUploadComplete }: FileUploadProps) {
+  // useStateを使うことで、uploading, error, hasFailedChunks, retryingの状態を管理する
+  // useStateは、Reactのフックで、状態を管理するための関数
+  // uploadingは、アップロード中かどうかを管理する
   const [uploading, setUploading] = useState(false);
+  // errorは、エラーが発生したときに表示するメッセージを管理する
   const [error, setError] = useState<string | null>(null);
+  // hasFailedChunksは、失敗したチャンクがあるかどうかを管理する
   const [hasFailedChunks, setHasFailedChunks] = useState(false);
+  // retryingは、再処理中かどうかを管理する
   const [retrying, setRetrying] = useState(false);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
