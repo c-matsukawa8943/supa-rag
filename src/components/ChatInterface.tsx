@@ -211,27 +211,7 @@ export default function ChatInterface() {
         </div>
       )}
       
-      {/* ========== 参照ソース（根拠）表示エリア ========== */}
-      {/* sourcesが空でない場合のみ表示（条件付きレンダリング） */}
-      {sources.length > 0 && (
-        <div className="border-t p-4">
-          <h3 className="font-medium mb-2">参照ソース:</h3>
-          <div className="space-y-2 text-sm max-h-40 overflow-y-auto">
-            {/* ソース一覧をマッピングして表示 */}
-            {sources.map((source, index) => (
-              <div key={index} className="p-2 bg-gray-50 rounded">
-                <p>
-                  <strong>ファイル:</strong> {source.file_name}（ページ: {source.page_num}）
-                </p>
-                <p>
-                  {/* 類似度をパーセントに変換して表示（小数点以下は四捨五入） */}
-                  <strong>一致度:</strong> {Math.round(source.similarity * 100)}%
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* ========== 参照ソース（根拠）表示エリアはここで非表示にしました ========== */}
       
       {/* ========== メッセージ入力フォーム ========== */}
       {/* フォーム送信時にhandleSubmit関数が実行される */}
