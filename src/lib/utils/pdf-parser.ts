@@ -4,7 +4,9 @@ import { supabase } from './supabase';
 import debugModule from 'debug';
 
 // デバッグ用のロガーを設定
+// ターミナルに出力するログの名前を設定
 const debug = debugModule('app:pdf-parser');
+// デバッグモードを有効にする
 debug.enabled = true;
 
 // ファイル検証関数を追加（新規）
@@ -39,6 +41,8 @@ export async function parsePdf(buffer: Buffer): Promise<string> {
     
     // バッファが有効かチェック
     if (!buffer || buffer.length === 0) {
+      // throwは、エラーを発生させる関数
+      // new Errorは、エラーを作成する関数
       throw new Error('無効なPDFバッファです');
     }
     
@@ -51,6 +55,8 @@ export async function parsePdf(buffer: Buffer): Promise<string> {
     };
     
     debug('pdf-parse呼び出し開始...');
+    // dataにpdfParseの結果を格納
+    // pdfParseは、pdf-parseの関数で、バッファとオプションを渡すと、テキストを返す
     const data = await pdfParse(buffer, options);
     debug('pdf-parse呼び出し成功: ページ数=%d, テキスト長=%d', data.numpages, data.text.length);
     
@@ -67,24 +73,29 @@ export async function parsePdf(buffer: Buffer): Promise<string> {
     return cleanedText;
   } catch (error) {
     // エラーの詳細情報をログに記録
+    // instanceofは、オブジェクトが特定の型かどうかを確認する演算子
     if (error instanceof Error) {
       debug('PDFパースエラー: %s', error.message);
       console.error('PDFの解析中にエラーが発生しました:', {
+        // エラーのメッセージ
         message: error.message,
+        // エラーのスタックトレース
         stack: error.stack,
+        // エラーの名前
         name: error.name
       });
     } else {
       debug('不明なPDFパースエラー: %o', error);
       console.error('PDFの解析中に予期しないエラーが発生しました:', error);
     }
-    throw new Error('PDFの解析に失敗しました: ' + (error instanceof Error ? error.message : '不明なエラー'));
+    throw new Error('参照ファイルの解析に失敗しました: ' + (error instanceof Error ? error.message : '不明なエラー'));
   }
 }
 
 // テキストを分割してチャンク化
 export function splitTextIntoChunks(text: string, chunkSize: number = 800): { content: string, page_num: number }[] {
-  debug('テキストチャンク化開始: テキスト長=%d, チャンクサイズ=%d', text.length, chunkSize);
+  debug('テキストチャンク化開始: テキスト長=%d, ページ分割数=%d', text.length, chunkSize);
+  // 分割したテキストを格納する配列、contentはテキスト、page_numはページ番号、分割代入し空の配列を作成
   const chunks: { content: string, page_num: number }[] = [];
   
   // テキストが無効な場合は空の配列を返す
@@ -95,6 +106,11 @@ export function splitTextIntoChunks(text: string, chunkSize: number = 800): { co
   }
   
   // 段落や意味のある区切りでテキストを分割
+  // splitは、文字列を分割する関数
+  // \n\s*\nは、改行と空白を区切りとして使用
+  // filterは、配列をフィルタリングする関数
+  // pは、段落を表す変数
+  // p.trim().length > 0は、段落が空でない場合にtrueを返す
   const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
   debug('段落分割結果: %d個の段落', paragraphs.length);
   
@@ -284,15 +300,19 @@ export async function getEmbedding(text: string): Promise<number[]> {
     
     debug('ベクトル化成功: ベクトル次元数=%d', result.embedding.values.length);
     // 元の768次元のベクトルをそのまま返す（Supabase側が768次元に対応したため）
+    console.log(result);
     return result.embedding.values;
+    
   } catch (error) {
     debug('ベクトル化エラー: %o', error);
     console.error('テキストのベクトル化中にエラーが発生しました:', error);
     throw new Error('テキストのベクトル化に失敗しました: ' + (error instanceof Error ? error.message : '不明なエラー'));
   }
+  
 }
 
 // 失敗したチャンクをグローバルに保持
+// 他ファイルからも失敗したチャンクがあるかを参照し、使える様にするため
 export const failedChunks: { fileName: string; chunk: { content: string; page_num: number } }[] = [];
 
 // PDFドキュメントをSupabaseに保存
@@ -311,6 +331,7 @@ export async function storeDocument(fileName: string, chunks: { content: string,
   chunks.forEach((chunk, index) => {
     debug('チャンク %d: ページ=%d, サイズ=%d文字, 先頭部分="%s..."', 
       index + 1, chunk.page_num, chunk.content.length, 
+      // chunk内の改行を空文字にする
       chunk.content.substring(0, 30).replace(/\n/g, ' '));
   });
   

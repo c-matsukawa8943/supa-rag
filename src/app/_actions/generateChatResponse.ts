@@ -81,7 +81,8 @@ export async function generateChatResponseAction(question: string) {
     } else {
       context = '関連情報が見つかりませんでした。';
     }
-    
+    console.log(context);
+    console.log(question);
     // Gemini APIで回答を生成（リトライロジック付き）
     const model = getModel();
     const prompt = `以下の情報に基づいて質問に正確に回答してください。

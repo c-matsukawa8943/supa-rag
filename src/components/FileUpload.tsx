@@ -22,22 +22,28 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
   const [hasFailedChunks, setHasFailedChunks] = useState(false);
   // retryingは、再処理中かどうかを管理する
   const [retrying, setRetrying] = useState(false);
-
+// useCallbackを使うことで、関数を再生成しないようにする
+// onDropは、ドラッグ&ドロップでファイルをアップロードするための関数
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    // ファイルを取得
     const file = acceptedFiles[0];
-    
+    // ファイルがない場合は処理を終了
     if (!file) return;
     
     try {
+      // アップロード中のフラグを立てる
       setUploading(true);
+      // エラーのフラグをリセット
       setError(null);
+      // 失敗したチャンクのフラグをリセット
       setHasFailedChunks(false);
       
+      // サーバーアクションにクライアント側からファイルを送信するためのFormDataを作成
       const formData = new FormData();
       formData.append('file', file);
       
       const result = await uploadPdfAction(formData);
-      
+      // エラーが発生した場合はエラーを表示
       if ('error' in result) {
         throw new Error(result.error);
       }

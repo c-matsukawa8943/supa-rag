@@ -2,44 +2,59 @@
 
 import { revalidatePath } from 'next/cache';
 import { 
+  // PDFをテキストに変換する関数
   parsePdf, 
+  // テキストを分割してチャンク化する関数
   splitTextIntoChunks, 
+  // ドキュメントをSupabaseに保存する関数
   storeDocument, 
+  // 失敗したチャンクを管理する配列
   failedChunks, 
+  // 失敗したチャンクを再処理する関数
   retryFailedChunks, 
+  // ファイル検証を行う関数
   validatePdfFile 
 } from '@/lib/utils/pdf-parser';
 
+// uploadPdfActionは、PDFファイルをアップロードするためのアクション
 export async function uploadPdfAction(formData: FormData) {
   try {
+    // ファイルを取得
     const file = formData.get('file') as File;
     
     // ファイル検証（pdf-parser.tsの関数を使用）
+    // 拡張子とサイズを検証
     const validation = validatePdfFile(file);
+    // 検証に失敗した場合はエラーを表示
     if (!validation.isValid) {
       return { error: validation.error, status: validation.status };
     }
-    
+    // コンソールにファイル名とサイズを表示。小数点第2位まで表示
     console.log(`PDFファイルの処理を開始します: ${file.name} (${validation.fileSizeMB?.toFixed(2)}MB)`);
     
-    // ファイルをArrayBufferに変換
+    // bytesはファイルのバイナリデータを格納する変数
     let bytes;
     try {
+      // ファイルをArrayBufferに変換
+      // arrayBufferは、ブラウザ側用のファイルのバイナリデータを取得する関数
       bytes = await file.arrayBuffer();
     } catch (err) {
+      // エラーが発生した場合はエラーを表示
       console.error('ArrayBufferの取得に失敗:', err);
       return { error: 'ファイルの読み取りに失敗しました: ' + (err instanceof Error ? err.message : '不明なエラー'), status: 400 };
     }
-    
+    // ファイルが空の場合はエラーを表示
     if (!bytes || bytes.byteLength === 0) {
       return { error: 'ファイルが空です', status: 400 };
     }
-    
+    // サーバーサイドで使用するバッファに変換
     const buffer = Buffer.from(bytes);
     
     // PDFをテキストに変換
     let text;
     try {
+      // parsePdfは、pdf-parser.tsの関数
+      //parsePDFにはクリーンテキストを返す
       text = await parsePdf(buffer);
     } catch (err) {
       return { 
@@ -47,13 +62,15 @@ export async function uploadPdfAction(formData: FormData) {
         status: 400 
       };
     }
-    
+    // trimは、文字列の先頭と末尾の空白を削除する関数
+    // lengthは、文字列の長さを返す関数
     if (!text || text.trim().length === 0) {
       return { error: 'PDFからテキストを抽出できませんでした: テキストが空です', status: 400 };
     }
     
     // テキストをチャンク化
     const chunks = splitTextIntoChunks(text);
+    console.log(chunks);
     
     if (!chunks || chunks.length === 0) {
       return { error: 'テキストのチャンク化に失敗しました: チャンクが生成されませんでした', status: 400 };
