@@ -62,7 +62,7 @@ export async function generateChatResponseAction(question: string) {
     // Supabaseでベクトル検索を実行
     const { data: similarDocuments, error } = await supabase
       .rpc('match_documents', {
-        query_embedding: embedding,
+        query_embedding: embedding, 
         match_threshold: 0.6,    // 一致閾値を上げて、より高品質の結果だけを取得
         match_count: 8           // より多くのコンテキストを収集
       });

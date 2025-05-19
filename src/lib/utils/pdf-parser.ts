@@ -300,7 +300,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
     
     debug('ベクトル化成功: ベクトル次元数=%d', result.embedding.values.length);
     // 元の768次元のベクトルをそのまま返す（Supabase側が768次元に対応したため）
-    console.log(result);
+    // console.log(result);
     return result.embedding.values;
     
   } catch (error) {

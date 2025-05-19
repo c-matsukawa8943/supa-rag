@@ -27,6 +27,7 @@ export default function FileUpload({ onUploadComplete }: FileUploadProps) {
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     // ファイルを取得
     const file = acceptedFiles[0];
+    
     // ファイルがない場合は処理を終了
     if (!file) return;
     

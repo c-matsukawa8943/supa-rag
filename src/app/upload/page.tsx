@@ -1,9 +1,9 @@
 'use client'; // クライアントサイドでのレンダリングを指定
 
 /**
- * PDFアップロードページコンポーネント
+ * ゲーム攻略ガイドアップロードページコンポーネント
  * 
- * このコンポーネントはPDFファイルをアップロードするためのインターフェースを提供します。
+ * このコンポーネントはゲームの攻略ガイドやマニュアルをアップロードするためのインターフェースを提供します。
  * ユーザーがPDFファイルをアップロードすると、ベクトルデータベースに保存され、
  * 後でチャットページから質問・検索できるようになります。
  */
@@ -36,14 +36,15 @@ export default function UploadPage() {
     <main className={styles.main}>
       {/* ページヘッダー */}
       <header className={styles.header}>
-        <h1 className={styles.title}>PDFアップロード</h1>
+        <h1 className={styles.title}>攻略ガイドをアップロード</h1>
         <p className={styles.description}>
-          PDFファイルをアップロードして、ベクトルデータベースに保存します。
+          ゲームの攻略情報やマニュアルをアップロードして、みんなで共有しましょう。
+          アップロードした情報はAIが学習し、初心者プレイヤーの質問に答えるために使われます。
         </p>
         {/* ナビゲーションリンク */}
         <nav className={styles.navigation}>
           <Link href="/" className={styles.navLink}>ホーム</Link>
-          <Link href="/chat" className={styles.navLink}>チャット</Link>
+          <Link href="/chat" className={styles.navLink}>AIに質問</Link>
         </nav>
       </header>
       
@@ -59,11 +60,22 @@ export default function UploadPage() {
         <FileUpload onUploadComplete={handleUploadComplete} />
       </div>
       
+      {/* サポートするファイル形式の説明 */}
+      <div className={styles.fileFormatInfo}>
+        <h3>サポートするファイル形式</h3>
+        <ul>
+          <li>PDF: ゲームの公式マニュアルやガイドブック</li>
+          <li>TXT: テキスト形式の攻略情報や攻略チャート</li>
+          <li>DOCX: ワード形式の攻略ガイド</li>
+        </ul>
+        <p className={styles.noteText}>※ファイルサイズは10MB以下にしてください</p>
+      </div>
+      
       {/* アクションエリア - チャットページへの誘導 */}
       <div className={styles.actionContainer}>
-        <p>PDFファイルをアップロードした後、チャットページで質問できます。</p>
+        <p>ガイドをアップロードした後、AIに質問してゲームの攻略情報を聞いてみましょう！</p>
         <Link href="/chat" className={styles.actionButton}>
-          チャットページに移動
+          AIに質問する
         </Link>
       </div>
     </main>

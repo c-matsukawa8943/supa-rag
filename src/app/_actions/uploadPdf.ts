@@ -31,6 +31,7 @@ export async function uploadPdfAction(formData: FormData) {
     }
     // コンソールにファイル名とサイズを表示。小数点第2位まで表示
     console.log(`PDFファイルの処理を開始します: ${file.name} (${validation.fileSizeMB?.toFixed(2)}MB)`);
+    console.log(file);
     
     // bytesはファイルのバイナリデータを格納する変数
     let bytes;

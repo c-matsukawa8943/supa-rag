@@ -5,12 +5,33 @@
  * 全ページで共通の基本スタイルやテーマカラー、フォントなどを設定します。
  */
 
+/* Google Fontsのインポート - スタイリッシュなフォント */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
 /* ルート変数 - アプリケーション全体で使うカラーテーマの定義 */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  /* 基本文字色（黒） */
+  --foreground-rgb: 33, 33, 33;
+  /* 基本文字色（ダークグレー） */
   --background-rgb: 255, 255, 255;
   /* 基本背景色（白） */
+  --primary-color: 56, 103, 214;
+  /* プライマリーカラー（青） */
+  --secondary-color: 238, 82, 83;
+  /* セカンダリーカラー（赤） */
+  --accent-color: 254, 211, 48;
+  /* アクセントカラー（黄） */
+  --neutral-light: 245, 246, 250;
+  /* 薄いグレー背景 */
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.05);
+  /* 洗練された影効果 */
+  --transition: all 0.3s ease;
+  /* 標準トランジション */
+  --border-radius: 8px;
+  /* 角丸の半径 */
+  --title-font: 'Montserrat', 'Noto Sans JP', sans-serif;
+  /* 見出し用フォント */
+  --body-font: 'Poppins', 'Noto Sans JP', sans-serif;
+  /* 本文用フォント */
 }
 
 /* HTML・BODYの基本設定 */
@@ -28,12 +49,18 @@ body {
   /* テキスト色を変数から設定 */
   background: rgb(var(--background-rgb));
   /* 背景色を変数から設定 */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  /* システムフォントを優先使用 */
+  font-family: var(--body-font);
+  /* スタイリッシュなフォントを使用 */
   -webkit-font-smoothing: antialiased;
   /* WebKitブラウザでのフォント表示を最適化 */
   -moz-osx-font-smoothing: grayscale;
   /* Firefoxでのフォント表示を最適化 */
+  line-height: 1.6;
+  /* 行間を少し広くして読みやすく */
+  letter-spacing: 0.015em;
+  /* 文字間隔を少し広げる */
+  font-weight: 400;
+  /* 標準の太さ */
 }
 
 /* すべての要素に適用する基本ボックスモデル */
@@ -44,12 +71,151 @@ body {
   margin: 0;
 }
 
-/* リンクスタイルのリセット */
+/* リンクスタイルのリセットとモダンなスタイル */
 a {
-  color: inherit;
-  /* 親要素から色を継承 */
+  color: rgb(var(--primary-color));
+  /* プライマリーカラーを使用 */
   text-decoration: none;
   /* デフォルトの下線を削除 */
+  position: relative;
+  /* 下線アニメーション用 */
+  transition: var(--transition);
+  /* スムーズなトランジション */
+}
+
+a:hover {
+  color: rgba(var(--primary-color), 0.8);
+  /* ホバー時に少し透明に */
+}
+
+a.underline-effect {
+  position: relative;
+}
+
+a.underline-effect::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: rgb(var(--primary-color));
+  transition: var(--transition);
+}
+
+a.underline-effect:hover::after {
+  width: 100%;
+}
+
+/* ボタン要素のスタイリッシュなスタイル */
+button,
+.button,
+input[type="button"],
+input[type="submit"] {
+  font-family: var(--body-font);
+  background-color: rgb(var(--primary-color));
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  letter-spacing: 0.03em;
+}
+
+button:hover,
+.button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  background-color: rgba(var(--primary-color), 0.9);
+}
+
+button:active,
+.button:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+/* セカンダリボタン */
+button.secondary,
+.button.secondary {
+  background-color: transparent;
+  color: rgb(var(--primary-color));
+  border: 1px solid rgb(var(--primary-color));
+}
+
+button.secondary:hover,
+.button.secondary:hover {
+  background-color: rgba(var(--primary-color), 0.08);
+}
+
+/* カード要素のスタイル */
+.card {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 5px 8px rgba(0, 0, 0, 0.04);
+  transform: translateY(-3px);
+}
+
+/* スタイリッシュなタイトルとコンテンツのスタイル */
+.elegant-title {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: rgb(var(--foreground-rgb));
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.elegant-title::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 4px;
+  background: rgb(var(--primary-color));
+  bottom: -10px;
+  left: 0;
+  border-radius: 2px;
+}
+
+.elegant-subtitle {
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: rgb(var(--foreground-rgb));
+  margin-bottom: 1.2rem;
+}
+
+/* アクセント付きコンテナ */
+.accent-container {
+  border-left: 4px solid rgb(var(--primary-color));
+  padding-left: 1.2rem;
+  margin: 1.5rem 0;
+  background-color: rgba(var(--neutral-light), 0.5);
+  padding: 1.2rem 1.5rem;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+/* グラデーションテキスト */
+.gradient-text {
+  background: linear-gradient(135deg, rgb(var(--primary-color)), rgb(var(--secondary-color)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
 /* チャットインターフェース用のユーティリティクラス - メッセージの最大幅 */
@@ -61,55 +227,130 @@ a {
 /* マークダウンコンテンツ用スタイル - チャットでの回答表示に使用 */
 /* 見出し1のスタイル */
 .markdown-content h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  font-family: var(--title-font);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 1.8rem;
+  margin-bottom: 1rem;
+  color: rgb(var(--foreground-rgb));
 }
 
 /* 見出し2のスタイル */
 .markdown-content h2 {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  font-family: var(--title-font);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  color: rgb(var(--foreground-rgb));
 }
 
 /* 段落のスタイル */
 .markdown-content p {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.7;
 }
 
 /* リストのスタイル */
 .markdown-content ul,
 .markdown-content ol {
-  padding-left: 1.5rem;
+  padding-left: 1.8rem;
   /* リストマーカーのスペース確保 */
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 /* リスト項目のスタイル */
 .markdown-content li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+/* リストのカスタムスタイル */
+.markdown-content ul li {
+  position: relative;
+}
+
+.markdown-content ul li::marker {
+  color: rgb(var(--primary-color));
 }
 
 /* インラインコードのスタイル */
 .markdown-content code {
-  font-family: monospace;
-  /* 等幅フォント */
-  background-color: rgba(0, 0, 0, 0.05);
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  /* モダンなモノスペースフォント */
+  font-size: 0.9em;
+  background-color: rgba(var(--neutral-light), 1);
   /* 薄いグレー背景 */
   padding: 0.2rem 0.4rem;
-  border-radius: 0.25rem;
+  border-radius: calc(var(--border-radius) * 0.5);
+  color: rgb(var(--secondary-color));
 }
 
 /* コードブロックのスタイル */
 .markdown-content pre {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(var(--neutral-light), 1);
   /* 薄いグレー背景 */
-  padding: 1rem;
-  border-radius: 0.5rem;
+  padding: 1.2rem;
+  border-radius: var(--border-radius);
   overflow-x: auto;
   /* 横幅が広い場合にスクロール可能に */
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.2rem;
+  border-left: 4px solid rgb(var(--primary-color));
+}
+
+/* 引用ブロックのスタイル */
+.markdown-content blockquote {
+  border-left: 4px solid rgb(var(--primary-color));
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: rgba(var(--foreground-rgb), 0.8);
+}
+
+/* テーブルのスタイル */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.markdown-content th {
+  background-color: rgb(var(--primary-color));
+  color: white;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem;
+}
+
+.markdown-content td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(var(--neutral-light), 1);
+}
+
+.markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-content tr:nth-child(even) {
+  background-color: rgba(var(--neutral-light), 0.3);
+}
+
+/* 区切り線のスタイル */
+.markdown-content hr {
+  border: 0;
+  height: 1px;
+  background: rgba(var(--foreground-rgb), 0.1);
+  margin: 2rem 0;
+}
+
+/* レスポンシブ画像 */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin: 1rem 0;
 }

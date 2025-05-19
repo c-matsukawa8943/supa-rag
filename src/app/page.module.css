@@ -1,327 +1,517 @@
-/* メインコンテンツエリアのスタイル定義 */
-.main {
+/* メインバナー */
+.mainBanner {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bannerImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ベースコンテナ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+/* ヘッダー */
+.header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e1e1e1;
+}
+
+.mainTitle {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #e60012;
+  font-weight: bold;
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+}
+
+/* ヘッダーコンテンツ */
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logoContainer {
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 150px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* アイコン関連 */
+.sectionIcon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.subsectionIcon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/* ランキングヘッダー */
+.rankHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rankingIcon {
+  margin-left: 0.5rem;
+}
+
+/* 目次セクション */
+.contentsMenu {
+  background-color: #fff;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menuTitle {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e60012;
+  color: #333;
+}
+
+.menuList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.menuList li {
+  list-style-type: none;
+}
+
+.menuList a {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.menuList a:hover {
+  color: #e60012;
+  text-decoration: underline;
+}
+
+/* セクション共通スタイル */
+.section {
+  margin-bottom: 3rem;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e60012;
+  color: #333;
+}
+
+.subsection {
+  margin-bottom: 2rem;
+}
+
+.subsectionTitle {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #f1f1f1;
+  border-left: 4px solid #e60012;
+  color: #333;
+}
+
+/* キャラクターランクセクション */
+.characterRank {
+  margin-bottom: 1.5rem;
+}
+
+.rankTitle {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #e60012;
+}
+
+.rankCharacters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.characterCard {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  /* 子要素間の間隔 */
-  grid-row-start: 2;
-  /* グリッドレイアウトの2行目に配置 */
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s;
 }
 
-/* 順序付きリストのスタイル */
-.main ol {
-  font-family: var(--font-geist-mono);
-  /* モノスペースフォントを使用 */
-  padding-left: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.01em;
-  /* 文字間隔を少し詰める */
-  list-style-position: inside;
-  /* リストマーカーを内側に配置 */
+.characterCard:hover {
+  transform: translateY(-5px);
 }
 
-/* リスト項目の間隔設定（最後の項目以外） */
-.main li:not(:last-of-type) {
-  margin-bottom: 8px;
-}
-
-/* インラインコードブロックのスタイル */
-.main code {
-  font-family: inherit;
-  background: var(--gray-alpha-100);
-  /* 薄いグレー背景 */
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-weight: 600;
-  /* やや太字 */
-}
-
-/* コールトゥアクション（CTA）ボタンコンテナ */
-.ctas {
-  display: flex;
-  gap: 16px;
-  /* ボタン間の間隔 */
-}
-
-/* CTAボタンの共通スタイル */
-.ctas a {
-  appearance: none;
-  border-radius: 128px;
-  /* 丸みを帯びたボタン */
-  height: 48px;
-  padding: 0 20px;
-  border: none;
-  border: 1px solid transparent;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-  /* スムーズな遷移効果 */
-  cursor: pointer;
+.characterImg {
+  width: 100px;
+  height: 100px;
+  background-color: #f1f1f1;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  line-height: 20px;
+  margin-bottom: 0.5rem;
+  border: 2px solid #ddd;
+  color: #666;
+  font-weight: bold;
+}
+
+.characterName {
+  font-size: 0.9rem;
   font-weight: 500;
-  /* やや太字 */
 }
 
-/* プライマリーCTAボタンスタイル */
-a.primary {
-  background: var(--foreground);
-  /* 前景色を背景に使用 */
-  color: var(--background);
-  /* 背景色をテキスト色に使用（反転効果） */
-  gap: 8px;
-  /* アイコンとテキストの間隔 */
+/* グリッドリンク */
+.gridLinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
 }
 
-/* セカンダリーCTAボタンスタイル */
-a.secondary {
-  border-color: var(--gray-alpha-200);
-  /* 薄いグレーの境界線 */
-  min-width: 158px;
-  /* 最小幅を設定 */
-}
-
-/* フッターコンテナのスタイル */
-.footer {
-  grid-row-start: 3;
-  /* グリッドレイアウトの3行目に配置 */
-  display: flex;
-  gap: 24px;
-  /* 項目間の間隔 */
-}
-
-/* フッターのリンク */
-.footer a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  /* アイコンとテキストの間隔 */
-}
-
-/* フッター内の画像（アイコン）のスタイル */
-.footer img {
-  flex-shrink: 0;
-  /* 画像サイズを維持 */
-}
-
-/* タッチデバイス以外でのホバー効果を有効化 */
-@media (hover: hover) and (pointer: fine) {
-
-  /* プライマリーボタンのホバー状態 */
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  /* セカンダリーボタンのホバー状態 */
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-
-  /* フッターリンクのホバー状態 */
-  .footer a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    /* 下線とテキストの間隔 */
-  }
-}
-
-/* モバイル向けレスポンシブデザイン（600px以下） */
-@media (max-width: 600px) {
-  .page {
-    padding: 32px;
-    padding-bottom: 80px;
-  }
-
-  /* モバイルでのメインコンテンツ配置 */
-  .main {
-    align-items: center;
-  }
-
-  /* モバイルでのリストテキスト配置 */
-  .main ol {
-    text-align: center;
-  }
-
-  /* モバイルでのCTAボタン配置（縦並び） */
-  .ctas {
-    flex-direction: column;
-  }
-
-  /* モバイルでのボタンサイズ調整 */
-  .ctas a {
-    font-size: 14px;
-    height: 40px;
-    padding: 0 16px;
-  }
-
-  /* モバイルでのセカンダリーボタン幅調整 */
-  a.secondary {
-    min-width: auto;
-  }
-
-  /* モバイルでのフッター配置 */
-  .footer {
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-/* ダークモード対応 */
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-    /* ロゴを反転して明るく表示 */
-  }
-}
-
-/* ナビゲーションコンテナ - メインセクション間の移動用 */
-.navigationContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  /* カード間の間隔 */
-  margin: 2rem 0;
-  width: 100%;
-  max-width: 900px;
-  /* 最大幅を制限 */
-}
-
-/* タブレット・モバイル向けナビゲーション調整 */
-@media (max-width: 768px) {
-  .navigationContainer {
-    flex-direction: column;
-    /* 縦並びに変更 */
-  }
-}
-
-/* ナビゲーションカード - 各機能へのリンクを表示 */
-.navigationCard {
-  background-color: #f9f9f9;
-  /* 薄いグレー背景 */
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* 軽い影効果 */
-  flex: 1;
-  /* 均等に幅を分配 */
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  /* ホバー時のアニメーション */
-}
-
-/* カードのホバーエフェクト - 浮き上がる効果 */
-.navigationCard:hover {
-  transform: translateY(-5px);
-  /* 上に少し移動 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  /* 影を強調 */
-}
-
-/* カード内の見出し */
-.navigationCard h2 {
-  margin-top: 0;
-  color: #0070f3;
-  /* テーマカラー（青） */
-}
-
-/* カード内の説明文 */
-.navigationCard p {
-  margin: 1rem 0;
-  flex-grow: 1;
-  /* 可変スペースを埋める */
-}
-
-/* ナビゲーションボタン - カード内のアクションボタン */
-.navigationButton {
-  display: inline-block;
-  background-color: #0070f3;
-  /* テーマカラー（青） */
-  color: white;
-  padding: 0.75rem 1.5rem;
+.gridLink {
+  display: block;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
   border-radius: 4px;
   text-decoration: none;
+  color: #0066cc;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.gridLink:hover {
+  background-color: #eef5fd;
+  border-color: #0066cc;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #e60012;
+}
+
+/* その他のリンク */
+.moreLink {
+  display: block;
+  text-align: right;
+  color: #0066cc;
   font-weight: bold;
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.moreLink:hover {
+  color: #e60012;
+  text-decoration: underline;
+}
+
+/* 検索セクション */
+.searchSection {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
   text-align: center;
-  margin-top: auto;
-  /* カード下部に配置 */
-  transition: background-color 0.2s ease;
-  /* ホバー時のアニメーション */
+  color: white;
 }
 
-/* ボタンのホバーエフェクト */
-.navigationButton:hover {
-  background-color: #0051a8;
-  /* 少し暗い青 */
+.searchDescription {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
 }
 
-/* ページナビゲーション - ページ間の移動リンク */
-.navigation {
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.chatButton,
+.uploadButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #e60012;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.chatButton:hover,
+.uploadButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  background-color: #f8f8f8;
+}
+
+/* 掲示板セクション */
+.bbsLinks {
   display: flex;
   gap: 1rem;
-  /* リンク間の間隔 */
-  margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
-/* ナビゲーションリンク */
-.navLink {
-  color: #0070f3;
-  /* テーマカラー（青） */
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border: 1px solid #0070f3;
-  border-radius: 4px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  /* ホバー時のアニメーション */
-}
-
-/* ナビゲーションリンクのホバーエフェクト */
-.navLink:hover {
-  background-color: #0070f3;
-  color: white;
-  /* 色反転効果 */
-}
-
-/* アップロードコンテナ - ファイルアップロード用エリア */
-.uploadContainer {
-  width: 100%;
-  max-width: 600px;
-  /* 最大幅を制限 */
-  margin: 1rem 0;
-}
-
-/* アクションコンテナ - 主要アクションの表示エリア */
-.actionContainer {
-  margin: 2rem 0;
+.bbsLink {
+  flex: 1;
+  min-width: 150px;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  color: #333;
   text-align: center;
-}
-
-/* アクションボタン - 主要なアクション用ボタン */
-.actionButton {
-  display: inline-block;
-  background-color: #0070f3;
-  /* テーマカラー（青） */
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
   text-decoration: none;
-  font-weight: bold;
-  margin-top: 1rem;
-  transition: background-color 0.2s ease;
-  /* ホバー時のアニメーション */
+  border-radius: 6px;
+  transition: all 0.3s;
 }
 
-/* アクションボタンのホバーエフェクト */
-.actionButton:hover {
-  background-color: #0051a8;
-  /* 少し暗い青 */
+.bbsLink:hover {
+  background-color: #e60012;
+  color: white;
+}
+
+/* フッター */
+.footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  text-align: center;
+  border-top: 1px solid #ddd;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.copyright {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+/* レスポンシブ設定 */
+@media (max-width: 768px) {
+  .mainTitle {
+    font-size: 1.75rem;
+  }
+
+  .menuList,
+  .gridLinks,
+  .rankCharacters {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .buttonContainer {
+    flex-direction: column;
+  }
+
+  .section {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .menuList,
+  .gridLinks {
+    grid-template-columns: 1fr;
+  }
+
+  .rankCharacters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section {
+    margin-bottom: 1.5rem;
+  }
+
+  .bbsLinks {
+    flex-direction: column;
+  }
+}
+
+/* SNSリンク */
+.socialLinks {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.socialLink {
+  transition: transform 0.3s;
+}
+
+.socialLink:hover {
+  transform: translateY(-3px);
+}
+
+/* キャラクターグリッド */
+.characterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.characterIconItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.characterIconItem:hover {
+  transform: translateY(-3px);
+}
+
+.characterIconWrapper {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.characterIconImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.characterIconName {
+  font-size: 0.7rem;
+  font-weight: 500;
+  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .characterGrid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+
+  .characterIconWrapper {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 576px) {
+  .characterGrid {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  }
+
+  .characterIconWrapper {
+    width: 30px;
+    height: 30px;
+  }
+
+  .characterIconName {
+    font-size: 0.6rem;
+  }
+}
+
+/* 新しいヘッダーとナビゲーションバー */
+.headerTop {
+  width: 100%;
+  background-color: #333;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 5px;
+  margin-right: 5px;
+}
+
+.searchButton {
+  background-color: #f0c040;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.userOptions {
+  display: flex;
+  align-items: center;
+}
+
+.loginButton {
+  background-color: #f0c040;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.mainNav {
+  background-color: #fff;
+}
+
+.headerTitle {
+  color: white;
+  font-size: 2rem;
+  margin: 0 30px;
 }
