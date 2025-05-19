@@ -12,6 +12,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import FileUpload from '@/components/FileUpload';
 import styles from '../page.module.css';
+import uploadStyles from './upload.module.css';
 
 export default function UploadPage() {
   // アップロード完了後の通知メッセージを管理するstate
@@ -57,7 +58,22 @@ export default function UploadPage() {
       
       {/* ファイルアップロードコンポーネント */}
       <div className={styles.uploadContainer}>
+        <h3 className={uploadStyles.uploadTitle}>攻略ガイドをアップロード</h3>
+        <p className={uploadStyles.uploadDescription}>
+          スマッシュブラザーズに関する攻略資料をアップロードすると、AIがその内容を学習し、質問に答えられるようになります。
+        </p>
         <FileUpload onUploadComplete={handleUploadComplete} />
+        
+        <div className={uploadStyles.fileFormatInfo}>
+          <h3>アップロードできる資料例:</h3>
+          <ul>
+            <li>ファイター攻略ガイド</li>
+            <li>対戦テクニック解説書</li>
+            <li>フレームデータ資料</li>
+            <li>大会戦略ガイド</li>
+          </ul>
+          <p className={uploadStyles.noteText}>※ファイルサイズは10MB以下にしてください</p>
+        </div>
       </div>
       
       {/* サポートするファイル形式の説明 */}

@@ -10,8 +10,8 @@ import "./globals.css";
 
 // アプリケーションのメタデータ設定
 export const metadata: Metadata = {
-  title: "Supa-rag", // ブラウザのタブに表示されるタイトル
-  description: "Supa-rag", // 検索エンジン用の説明文
+  title: "SMASHMATE-ANALYSIS", // ブラウザのタブに表示されるタイトル
+  description: "スマッシュブラザーズの分析サイト", // 検索エンジン用の説明文
 };
 
 /**
@@ -26,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" style={{ margin: 0, padding: 0, overflow: 'auto', height: 'auto', width: '100%' }}>
+      <body style={{ margin: 0, padding: 0, overflow: 'auto', height: 'auto', width: '100%', background: 'none' }}>
         {children} {/* 各ページの内容がここに挿入される */}
       </body>
     </html>

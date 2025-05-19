@@ -5,33 +5,47 @@
  * 全ページで共通の基本スタイルやテーマカラー、フォントなどを設定します。
  */
 
-/* Google Fontsのインポート - スタイリッシュなフォント */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+/* Google Fontsのインポート - スマブラ風フォント */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
 
-/* ルート変数 - アプリケーション全体で使うカラーテーマの定義 */
+/* ルート変数 - スマブラスタイルのテーマカラー */
 :root {
-  --foreground-rgb: 33, 33, 33;
-  /* 基本文字色（ダークグレー） */
-  --background-rgb: 255, 255, 255;
-  /* 基本背景色（白） */
-  --primary-color: 56, 103, 214;
-  /* プライマリーカラー（青） */
-  --secondary-color: 238, 82, 83;
-  /* セカンダリーカラー（赤） */
-  --accent-color: 254, 211, 48;
-  /* アクセントカラー（黄） */
-  --neutral-light: 245, 246, 250;
-  /* 薄いグレー背景 */
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.05);
-  /* 洗練された影効果 */
-  --transition: all 0.3s ease;
-  /* 標準トランジション */
-  --border-radius: 8px;
-  /* 角丸の半径 */
+  --foreground-rgb: 255, 255, 255;
+  /* 基本文字色（白） */
+  --background-rgb: 15, 15, 20;
+  /* 基本背景色（濃紺） */
+  --primary-color: 230, 0, 18;
+  /* プライマリーカラー（スマブラレッド） */
+  --secondary-color: 255, 204, 0;
+  /* セカンダリーカラー（スマブライエロー） */
+  --accent-color: 0, 150, 230;
+  /* アクセントカラー（スマブラブルー） */
+  --neutral-light: 40, 40, 50;
+  /* ダークグレー背景 */
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 1px 5px rgba(0, 0, 0, 0.4);
+  /* 深い影効果 */
+  --transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* スムーズトランジション */
+  --border-radius: 4px;
+  /* 角丸 */
   --title-font: 'Montserrat', 'Noto Sans JP', sans-serif;
-  /* 見出し用フォント */
-  --body-font: 'Poppins', 'Noto Sans JP', sans-serif;
+  /* タイトル用フォント */
+  --body-font: 'Noto Sans JP', sans-serif;
   /* 本文用フォント */
+  --overlay-color: rgba(10, 10, 15, 0.85);
+  /* 背景動画の上に重ねるオーバーレイの色 */
+  --nav-bg: rgba(20, 20, 30, 0.95);
+  /* ナビゲーション背景色 */
+  --card-bg: rgba(30, 30, 40, 0.9);
+  /* カード背景色 */
+  --section-bg: rgba(25, 25, 35, 0.95);
+  /* セクション背景色 */
+  --red-glow: 0 0 10px rgba(230, 0, 18, 0.7), 0 0 20px rgba(230, 0, 18, 0.4);
+  /* レッド光彩効果 */
+  --yellow-glow: 0 0 10px rgba(255, 204, 0, 0.7), 0 0 20px rgba(255, 204, 0, 0.4);
+  /* イエロー光彩効果 */
+  --blue-glow: 0 0 10px rgba(0, 150, 230, 0.7), 0 0 20px rgba(0, 150, 230, 0.4);
+  /* ブルー光彩効果 */
 }
 
 /* HTML・BODYの基本設定 */
@@ -41,26 +55,55 @@ body {
   /* ビューポート幅を超えないようにする */
   overflow-x: hidden;
   /* 横方向のスクロールを無効化 */
+  position: relative;
+  /* 背景動画の位置決めのため */
+  margin: 0;
+  padding: 0;
+  height: auto;
+  width: 100%;
+  overflow-y: auto !important;
+  /* 強制的に縦スクロールを有効化 */
+  background-color: rgb(var(--background-rgb));
+  background-image: linear-gradient(to bottom, rgba(10, 10, 20, 0.9), rgba(15, 15, 30, 0.95)), url('/scraped-images/bg-clouds.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-/* BODY要素のスタイリング */
+/* BODY要素のスタイリング - スマブラスタイル */
 body {
   color: rgb(var(--foreground-rgb));
   /* テキスト色を変数から設定 */
-  background: rgb(var(--background-rgb));
-  /* 背景色を変数から設定 */
   font-family: var(--body-font);
-  /* スタイリッシュなフォントを使用 */
+  /* 標準フォント */
   -webkit-font-smoothing: antialiased;
   /* WebKitブラウザでのフォント表示を最適化 */
   -moz-osx-font-smoothing: grayscale;
   /* Firefoxでのフォント表示を最適化 */
   line-height: 1.6;
   /* 行間を少し広くして読みやすく */
-  letter-spacing: 0.015em;
-  /* 文字間隔を少し広げる */
+  letter-spacing: 0.02em;
+  /* 文字間隔 */
   font-weight: 400;
-  /* 標準の太さ */
+  /* 太さを標準に */
+  min-height: 100vh;
+  /* 最低でも画面の高さいっぱいに表示 */
+  animation: fadeIn 0.6s ease-in-out;
+  /* ページ読み込み時のフェードインアニメーション */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ページフェードインアニメーション */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* すべての要素に適用する基本ボックスモデル */
@@ -71,286 +114,619 @@ body {
   margin: 0;
 }
 
-/* リンクスタイルのリセットとモダンなスタイル */
-a {
-  color: rgb(var(--primary-color));
-  /* プライマリーカラーを使用 */
-  text-decoration: none;
-  /* デフォルトの下線を削除 */
-  position: relative;
-  /* 下線アニメーション用 */
+/* レイアウト幅コントロール */
+.content-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* カード要素をスマブラ風に */
+.card {
+  background: rgba(30, 30, 40, 0.75);
+  border-radius: var(--border-radius);
+  padding: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   transition: var(--transition);
-  /* スムーズなトランジション */
+  margin-bottom: 1rem;
+  position: relative;
+  border-left: 3px solid rgb(var(--primary-color));
+  backdrop-filter: blur(5px);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--red-glow);
+  background: rgba(35, 35, 45, 0.85);
+}
+
+/* デフォルトテキスト設定 */
+p,
+span,
+div,
+li,
+td,
+th {
+  color: rgb(var(--foreground-rgb));
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* 見出しスタイルの統一 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: rgb(var(--foreground-rgb));
+  font-family: var(--title-font);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* すべてのリンクにスマブラ風スタイルを適用 */
+a {
+  color: rgb(var(--foreground-rgb));
+  /* 白色 */
+  text-decoration: none;
+  /* 下線なし */
+  font-weight: 500;
+  /* 中太 */
+  transition: color 0.3s;
+  /* 色の変化をスムーズに */
+  letter-spacing: 0.02em;
+  /* 文字間隔 */
 }
 
 a:hover {
-  color: rgba(var(--primary-color), 0.8);
-  /* ホバー時に少し透明に */
+  color: rgb(var(--primary-color));
+  /* ホバー時の赤色 */
+  text-decoration: none;
+  /* 下線表示しない */
 }
 
-a.underline-effect {
-  position: relative;
-}
-
-a.underline-effect::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -2px;
-  left: 0;
-  background-color: rgb(var(--primary-color));
-  transition: var(--transition);
-}
-
-a.underline-effect:hover::after {
-  width: 100%;
-}
-
-/* ボタン要素のスタイリッシュなスタイル */
+/* ボタン要素のスマブラスタイル */
 button,
 .button,
 input[type="button"],
 input[type="submit"] {
-  font-family: var(--body-font);
-  background-color: rgb(var(--primary-color));
+  font-family: var(--title-font);
+  background: rgb(var(--primary-color));
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 700;
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: var(--box-shadow);
-  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 button:hover,
-.button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover {
+.button:hover {
+  background: rgba(var(--primary-color), 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-  background-color: rgba(var(--primary-color), 0.9);
+  box-shadow: var(--red-glow);
 }
 
-button:active,
-.button:active,
-input[type="button"]:active,
-input[type="submit"]:active {
-  transform: translateY(1px);
-}
-
-/* セカンダリボタン */
-button.secondary,
-.button.secondary {
-  background-color: transparent;
-  color: rgb(var(--primary-color));
-  border: 1px solid rgb(var(--primary-color));
-}
-
-button.secondary:hover,
-.button.secondary:hover {
-  background-color: rgba(var(--primary-color), 0.08);
-}
-
-/* カード要素のスタイル */
-.card {
-  background: #fff;
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
-  box-shadow: var(--box-shadow);
-  transition: var(--transition);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.card:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 5px 8px rgba(0, 0, 0, 0.04);
-  transform: translateY(-3px);
-}
-
-/* スタイリッシュなタイトルとコンテンツのスタイル */
-.elegant-title {
-  font-family: var(--title-font);
-  font-weight: 700;
-  font-size: 2.5rem;
-  color: rgb(var(--foreground-rgb));
-  margin-bottom: 1.5rem;
+/* セクションタイトル */
+.section-title {
   position: relative;
-}
-
-.elegant-title::after {
-  content: '';
-  position: absolute;
-  width: 60px;
-  height: 4px;
-  background: rgb(var(--primary-color));
-  bottom: -10px;
-  left: 0;
-  border-radius: 2px;
-}
-
-.elegant-subtitle {
-  font-family: var(--title-font);
-  font-weight: 500;
-  font-size: 1.5rem;
+  text-align: left;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1rem;
   color: rgb(var(--foreground-rgb));
-  margin-bottom: 1.2rem;
-}
-
-/* アクセント付きコンテナ */
-.accent-container {
-  border-left: 4px solid rgb(var(--primary-color));
-  padding-left: 1.2rem;
-  margin: 1.5rem 0;
-  background-color: rgba(var(--neutral-light), 0.5);
-  padding: 1.2rem 1.5rem;
+  font-family: var(--title-font);
+  font-weight: 900;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background-color: rgb(var(--primary-color));
+  display: inline-block;
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
-/* グラデーションテキスト */
-.gradient-text {
-  background: linear-gradient(135deg, rgb(var(--primary-color)), rgb(var(--secondary-color)));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: inline-block;
+/* セクション装飾 */
+.section-decoration {
+  width: 100%;
+  height: 4px;
+  background-color: rgb(var(--primary-color));
+  margin: 0.5rem 0 1.5rem;
 }
 
-/* チャットインターフェース用のユーティリティクラス - メッセージの最大幅 */
-.max-w-3\/4 {
-  max-width: 75%;
-  /* コンテナの75%幅に制限 */
+/* 動画の上に重ねるオーバーレイ - スマブラ風 */
+.video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -5;
+  pointer-events: none;
 }
 
-/* マークダウンコンテンツ用スタイル - チャットでの回答表示に使用 */
-/* 見出し1のスタイル */
-.markdown-content h1 {
+/* YouTube動画背景用のコンテナ */
+.youtube-background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+  /* 動画を薄く表示 */
+  opacity: 0.8;
+}
+
+/* YouTube動画のタイトルを非表示にするオーバーレイ */
+.youtube-background-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  /* タイトル部分をカバー */
+  background-color: #000;
+  z-index: 5;
+  pointer-events: none;
+}
+
+#youtube-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -10;
+}
+
+#youtube-background iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translateX(-50%) translateY(-50%);
+  pointer-events: none;
+  z-index: -10;
+}
+
+/* メインナビゲーションの視認性向上 */
+nav a,
+.nav-link {
   font-family: var(--title-font);
-  font-size: 1.8rem;
   font-weight: 700;
-  margin-top: 1.8rem;
-  margin-bottom: 1rem;
-  color: rgb(var(--foreground-rgb));
-}
-
-/* 見出し2のスタイル */
-.markdown-content h2 {
-  font-family: var(--title-font);
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.8rem;
-  color: rgb(var(--foreground-rgb));
-}
-
-/* 段落のスタイル */
-.markdown-content p {
-  margin-bottom: 1rem;
-  line-height: 1.7;
-}
-
-/* リストのスタイル */
-.markdown-content ul,
-.markdown-content ol {
-  padding-left: 1.8rem;
-  /* リストマーカーのスペース確保 */
-  margin-bottom: 1rem;
-}
-
-/* リスト項目のスタイル */
-.markdown-content li {
-  margin-bottom: 0.5rem;
-  line-height: 1.7;
-}
-
-/* リストのカスタムスタイル */
-.markdown-content ul li {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1rem;
+  color: white;
   position: relative;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.markdown-content ul li::marker {
-  color: rgb(var(--primary-color));
-}
-
-/* インラインコードのスタイル */
-.markdown-content code {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  /* モダンなモノスペースフォント */
-  font-size: 0.9em;
-  background-color: rgba(var(--neutral-light), 1);
-  /* 薄いグレー背景 */
-  padding: 0.2rem 0.4rem;
-  border-radius: calc(var(--border-radius) * 0.5);
+nav a:hover,
+.nav-link:hover {
   color: rgb(var(--secondary-color));
 }
 
-/* コードブロックのスタイル */
-.markdown-content pre {
-  background-color: rgba(var(--neutral-light), 1);
-  /* 薄いグレー背景 */
-  padding: 1.2rem;
-  border-radius: var(--border-radius);
-  overflow-x: auto;
-  /* 横幅が広い場合にスクロール可能に */
-  margin-bottom: 1.2rem;
-  border-left: 4px solid rgb(var(--primary-color));
-}
-
-/* 引用ブロックのスタイル */
-.markdown-content blockquote {
-  border-left: 4px solid rgb(var(--primary-color));
-  padding-left: 1rem;
-  margin: 1.5rem 0;
-  font-style: italic;
-  color: rgba(var(--foreground-rgb), 0.8);
-}
-
-/* テーブルのスタイル */
-.markdown-content table {
+/* スマブラ特有のスタイル */
+.smash-container {
   width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto !important;
+  background-color: transparent;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ヘッダー部分（バナーとナビゲーションの統合） */
+.smash-header {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  z-index: 10;
+}
+
+.smash-banner {
+  width: 100%;
+  position: relative;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+  margin-bottom: 0;
+  padding: 1rem 0;
+}
+
+.smash-logo {
+  max-width: 60%;
+  height: auto;
+  filter: drop-shadow(0 0 15px rgba(230, 0, 18, 0.8));
+}
+
+.smash-nav {
+  background-color: rgba(25, 25, 35, 0.85);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid rgba(var(--primary-color), 0.3);
+  border-bottom: 1px solid rgba(var(--primary-color), 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.smash-nav-icons {
+  display: flex;
+  justify-content: center;
+  max-width: 1400px;
+  /* 横幅を拡大 */
+  width: 100%;
+}
+
+.smash-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  flex: 1;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.smash-nav-item:hover {
+  background-color: rgba(var(--primary-color), 0.2);
+  transform: translateY(-2px);
+}
+
+.smash-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: rgb(var(--primary-color));
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.smash-nav-item:hover::after {
+  width: 70%;
+}
+
+.smash-nav-icon {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s ease;
+}
+
+.smash-nav-item:hover .smash-nav-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(var(--primary-color), 0.7));
+}
+
+.smash-character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.smash-character-item {
+  position: relative;
+  transition: var(--transition);
+  overflow: hidden;
+  aspect-ratio: 1;
+  border-radius: var(--border-radius);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  background-color: transparent;
+  backdrop-filter: blur(3px);
+}
+
+.smash-character-item:hover {
+  transform: translateY(-5px) scale(1.05);
+  z-index: 2;
+  box-shadow: 0 5px 15px rgba(var(--primary-color), 0.4);
+  background-color: rgba(30, 30, 40, 0.8);
+}
+
+.smash-character-item:hover .smash-character-name {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.smash-character-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5) 60%, transparent);
+  color: white;
+  padding: 1rem 0.5rem 0.4rem;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-weight: 700;
+  transform: translateY(10px);
+}
+
+.smash-character-wrapper {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
 }
 
-.markdown-content th {
-  background-color: rgb(var(--primary-color));
-  color: white;
-  font-weight: 600;
-  text-align: left;
-  padding: 0.75rem;
+.smash-character-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
 }
 
-.markdown-content td {
-  padding: 0.75rem;
-  border-bottom: 1px solid rgba(var(--neutral-light), 1);
+.smash-character-item:hover .smash-character-image {
+  transform: scale(1.08);
 }
 
-.markdown-content tr:last-child td {
-  border-bottom: none;
+.smash-footer {
+  background-color: rgba(25, 25, 35, 0.85);
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 1px solid rgba(var(--primary-color), 0.3);
+  margin-top: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.markdown-content tr:nth-child(even) {
-  background-color: rgba(var(--neutral-light), 0.3);
-}
-
-/* 区切り線のスタイル */
-.markdown-content hr {
-  border: 0;
-  height: 1px;
-  background: rgba(var(--foreground-rgb), 0.1);
-  margin: 2rem 0;
-}
-
-/* レスポンシブ画像 */
-.markdown-content img {
-  max-width: 100%;
-  height: auto;
+.smash-section {
+  background-color: transparent;
+  padding: 2rem 0;
+  position: relative;
+  margin: 1.5rem 3rem;
   border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  margin: 1rem 0;
+  border-left: 4px solid rgb(var(--primary-color));
+  z-index: 2;
 }
+
+.smash-section:nth-child(odd) {
+  background-color: transparent;
+  border-left: 4px solid rgb(var(--accent-color));
+}
+
+.smash-section:nth-child(3n) {
+  border-left: 4px solid rgb(var(--secondary-color));
+}
+
+.smash-section-inner {
+  max-width: 1400px;
+  /* 横幅を拡大 */
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* グリッドコンテナを中央揃えに */
+.smash-character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  justify-content: center;
+}
+
+/* カードグリッドを中央揃えに */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+  margin: 2rem 0;
+  width: 100%;
+  justify-content: center;
+}
+
+/* テキスト中央揃え用ユーティリティ */
+.text-center {
+  text-align: center;
+}
+
+/* カテゴリータイトルを中央揃えに */
+.smash-category-title {
+  font-family: var(--title-font);
+  font-weight: 900;
+  font-size: 2.2rem;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: inline-block;
+  background-color: rgb(var(--primary-color));
+  padding: 0.4rem 1.5rem;
+  position: relative;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  align-self: flex-start;
+  /* タイトルは左揃えのまま */
+}
+
+/* セクション内のコンテンツタイプに応じた中央揃え */
+.content-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* メディアクエリの調整 */
+@media (min-width: 1400px) {
+  .smash-section-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1399px) {
+  .smash-section-inner {
+    max-width: 100%;
+    padding: 0 2rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .smash-section-inner {
+    max-width: 100%;
+    padding: 0 1.5rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* コンテンツエリアのポジショニングをリセット */
+main,
+section,
+header,
+footer,
+div {
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .smash-character-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .smash-nav-item {
+    padding: 0.5rem;
+  }
+
+  .smash-nav-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .smash-category-title {
+    font-size: 1.8rem;
+    padding: 0.4rem 1.2rem;
+  }
+
+  .smash-section-inner {
+    padding: 0 1rem;
+  }
+
+  .smash-banner {
+    height: 20vh;
+    min-height: 120px;
+  }
+
+  .smash-logo {
+    max-width: 75%;
+  }
+}
+
+@media (max-width: 576px) {
+  .smash-character-grid {
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 0.4rem;
+  }
+
+  .smash-nav-icons {
+    flex-wrap: wrap;
+  }
+
+  .smash-nav-item {
+    flex: 0 0 33.333%;
+  }
+
+  .smash-logo {
+    max-width: 85%;
+  }
+
+  .smash-banner {
+    height: 20vh;
+    min-height: 100px;
+  }
+
+  .smash-category-title {
+    font-size: 1.5rem;
+    padding: 0.3rem 1rem;
+    width: 100%;
+    border-radius: 0;
+    box-sizing: border-box;
+  }
+
+  .smash-section-inner {
+    padding: 0 0.75rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+}
+
+/* キャラクターセクションスタイルの修正 - 黒い背景の削除 */
+.smash-character-item,
+.smash-character-grid a,
+.smash-character-wrapper {
+  background: transparent !important;
+}
+
+/* 他のグローバルスタイルはそのまま */
