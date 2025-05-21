@@ -50,6 +50,11 @@ async function withRetry<T>(
   throw lastError || new Error('リトライが最大回数に達しました');
 }
 
+function normalizeVector(vector: number[]): number[] {
+  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+  return vector.map(val => val / magnitude);
+}
+
 export async function generateChatResponseAction(question: string) {
   try {
     if (!question) {
@@ -58,14 +63,22 @@ export async function generateChatResponseAction(question: string) {
     
     // 質問のベクトル化
     const embedding = await getEmbedding(question);
-    
+
+    // ベクトル生成後に正規化するコード
+    const normalizedEmbedding = normalizeVector(embedding);
+
     // Supabaseでベクトル検索を実行
     const { data: similarDocuments, error } = await supabase
       .rpc('match_documents', {
-        query_embedding: embedding, 
-        match_threshold: 0.6,    // 一致閾値を上げて、より高品質の結果だけを取得
-        match_count: 8           // より多くのコンテキストを収集
+        query_embedding: normalizedEmbedding, 
+        match_threshold: 0.8,    // 一致閾値を上げて、より高品質の結果だけを取得
+        match_count: 3          // より多くのコンテキストを収集
       });
+
+    // 類似度スコアを確認するデバッグコードを追加
+    console.log('類似度スコア:', similarDocuments.map((doc: any) => 
+      `${doc.file_name} (p.${doc.page_num}): ${doc.similarity.toFixed(4)}`
+    ));
     
     if (error) {
       console.error('ベクトル検索中にエラーが発生しました:', error);
@@ -94,11 +107,10 @@ ${context}
 
 指示:
 1. 回答は必ず上記の情報のみに基づいて行ってください。
-2. 上記の情報に明示的に書かれている内容だけを使用してください。
-3. 上記の情報にない知識や推測を追加しないでください。
-4. 可能な限り元のドキュメントの表現や言い回しを維持してください。
-5. 情報に書かれていない場合は「提供された情報には、その内容は含まれていません」と回答してください。
-6. 簡潔かつ正確に回答してください。
+2. 可能な限り元のドキュメントの表現や言い回しを維持してください。
+3. 情報に書かれていない場合は「提供された情報には、その内容は含まれていません」と回答してください。
+4. 簡潔かつ正確に回答してください。
+5. 関連する情報があれば、その情報を参考に回答してください。
 
 回答:`;
     

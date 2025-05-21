@@ -93,7 +93,7 @@ export async function parsePdf(buffer: Buffer): Promise<string> {
 }
 
 // テキストを分割してチャンク化
-export function splitTextIntoChunks(text: string, chunkSize: number = 200): { content: string, page_num: number }[] {
+export function splitTextIntoChunks(text: string, chunkSize: number = 300): { content: string, page_num: number }[] {
   debug('テキストチャンク化開始: テキスト長=%d, ページ分割数=%d', text.length, chunkSize);
   // 分割したテキストを格納する配列、contentはテキスト、page_numはページ番号、分割代入し空の配列を作成
   const chunks: { content: string, page_num: number }[] = [];

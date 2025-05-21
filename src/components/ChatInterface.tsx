@@ -106,10 +106,42 @@ export default function ChatInterface() {
   }, [messages]); // messagesが変わるたびに実行
   
   /**
+   * 副作用フック - メッセージが更新されたらローカルストレージに保存
+   */
+  useEffect(() => {
+    // 会話が更新されたらローカルストレージに保存
+    if (messages.length > 0) {
+      localStorage.setItem('chat-history', JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  /**
+   * 副作用フック - 初期化時にローカルストレージから会話履歴を読み込み
+   */
+  useEffect(() => {
+    try {
+      const savedMessages = localStorage.getItem('chat-history');
+      if (savedMessages) {
+        setMessages(JSON.parse(savedMessages));
+      }
+    } catch (error) {
+      console.error('会話履歴の読み込みに失敗しました:', error);
+    }
+  }, []);
+  
+  /**
    * 手動でメッセージ最下部にスクロールする関数
    */
   const scrollToBottom = (smooth = true) => {
     scrollChatToBottom(smooth);
+  };
+
+  /**
+   * 会話履歴をクリアする関数
+   */
+  const clearChatHistory = () => {
+    setMessages([]);
+    localStorage.removeItem('chat-history');
   };
 
   /**
@@ -536,14 +568,30 @@ export default function ChatInterface() {
               スマブラアドバイザー
             </h4>
           </div>
-          <div style={{ 
-            fontSize: '0.8rem', 
-            color: 'rgba(255,255,255,0.7)',
-            backgroundColor: 'rgba(0,0,0,0.2)',
-            padding: '0.25rem 0.5rem',
-            borderRadius: '4px'
-          }}>
-            オンライン
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button 
+              onClick={clearChatHistory}
+              style={{
+                background: 'rgba(255,255,255,0.1)',
+                border: 'none',
+                color: 'rgba(255,255,255,0.7)',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '4px',
+                fontSize: '0.8rem',
+                cursor: 'pointer'
+              }}
+            >
+              履歴クリア
+            </button>
+            <div style={{ 
+              fontSize: '0.8rem', 
+              color: 'rgba(255,255,255,0.7)',
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '4px'
+            }}>
+              オンライン
+            </div>
           </div>
         </div>
         
